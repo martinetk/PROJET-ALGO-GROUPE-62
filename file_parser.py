@@ -1,62 +1,25 @@
 import os
-import PyPDF2
+import fitz  # PyMuPDF
 
-def read_txt(file_path):
+# Lire le contenu d'un fichier texte
+
+def lire_fichier_txt(chemin):
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
-            return f.read()
+        with open(chemin, 'r', encoding='utf-8') as f:
+            return f.readlines()
     except Exception as e:
-        print(f"Erreur lecture {file_path}: {e}")
-        return ""
+        print(f"Erreur lors de la lecture du fichier texte : {e}")
+        return []
 
-def read_pdf(file_path):
-    text = ""
+# Extraire le texte d'un fichier PDF ligne par ligne
+
+def lire_fichier_pdf(chemin):
     try:
-        with open(file_path, 'rb') as f:
-            reader = PyPDF2.PdfReader(f)
-            for page in reader.pages:
-                text += page.extract_text() + "\n"
+        texte = ""
+        with fitz.open(chemin) as doc:
+            for page in doc:
+                texte += page.get_text()
+        return texte.splitlines()
     except Exception as e:
-        print(f"Erreur PDF {file_path}: {e}")
-    return text
-
-def get_file_content(file_path):
-    ext = os.path.splitext(file_path)[1].lower()
-    if ext == '.txt':
-        return read_txt(file_path)
-    elif ext == '.pdf':
-        return read_pdf(file_path)
-    else:
-        raise ValueError("Format non supporté : uniquement .txt ou .pdf"import os
-import PyPDF2
-
-def read_txt(file_path):
-    try:
-        with open(file_path, 'r', encoding='utf-8') as f:
-            return f.read()
-    except Exception as e:
-        print(f"Erreur lecture {file_path}: {e}")
-        return ""
-
-def read_pdf(file_path):
-    text = ""
-    try:
-        with open(file_path, 'rb') as f:
-            reader = PyPDF2.PdfReader(f)
-            for page in reader.pages:
-                text += page.extract_text() + "\n"
-    except Exception as e:
-        print(f"Erreur PDF {file_path}: {e}")
-    return text
-
-def get_file_content(file_path):
-    ext = os.path.splitext(file_path)[1].lower()
-    if ext == '.txt':
-        return read_txt(file_path)
-    elif ext == '.pdf':
-        return read_pdf(file_path)
-    else:
-        raise ValueError("Format non supporté : uniquement .txt ou .pdf")
-                        
-     
-              
+        print(f"Erreur lors de la lecture du fichier PDF : {e}")
+        return []
